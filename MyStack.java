@@ -2,52 +2,52 @@ import java.util.EmptyStackException;
 
 public class MyStack<E> implements StackInterface<E>
 {
+
 	public class Node<E>
 	{
-		private Node<E> next;
-		private E data;
-
-		public Node(E entry)
+		E data;
+		Node<E> next;
+		
+		public Node(E value)
 		{
-			data = entry;
-			next = null;
+			data = value;
 		}
-
-		public Node(E entry, Node<E> nextNode)
+		
+		public Node(E value, Node<E> nextNode)
 		{
-			data = entry;
+			data = value;
 			next = nextNode;
 		}
-
-		public Node<E> getNextNode()
-		{
-			return next;
-		}
-
-		public void setNextNode(Node<E> node)
-		{
-			next = node;
-		}
-
+		
 		public E getData()
 		{
 			return data;
 		}
-
+		
 		public void setData(E value)
 		{
 			data = value;
 		}
+		
+		public Node<E> getNextNode()
+		{
+			return next;
+		}
+		
+		public void setNextNode(Node<E> node)
+		{
+			next = node;
+		}
 	}
-
-	Node<E> topOfStack;
-
+	
+	Node<E> topStack;
+	
 	@Override
 	public void push(E newEntry) 
 	{
 		Node<E> newNode = new Node<E>(newEntry);
-		newNode.setNextNode(topOfStack);
-		topOfStack = newNode;
+		newNode.setNextNode(topStack);
+		topStack = newNode;
 	}
 
 	@Override
@@ -57,10 +57,10 @@ public class MyStack<E> implements StackInterface<E>
 		{
 			throw new EmptyStackException();
 		}
-
-		E value = topOfStack.getData();
-		topOfStack = topOfStack.getNextNode();
-		return value;
+		
+		E target = topStack.getData();
+		topStack = topStack.getNextNode();
+		return target;
 	}
 
 	@Override
@@ -68,27 +68,61 @@ public class MyStack<E> implements StackInterface<E>
 	{
 		if(isEmpty())
 		{
-			throw new EmptyStackException(); 
+			throw new EmptyStackException();
 		}
-
-		return topOfStack.getData();
+		
+		return topStack.getData();
 	}
 
 	@Override
 	public boolean isEmpty() 
 	{
-		if(topOfStack.getData() == null)
+		if(topStack == null)
 		{
 			return true;
 		}
-
+		
 		return false;
 	}
 
 	@Override
 	public void clear() 
 	{
-		topOfStack = null;
+		topStack = null;
 	}
-
+	
+	public String toString()
+	{
+		String statement = "Top: ";
+		
+		Node<E> stackNode = topStack;
+		
+		while(stackNode != null)
+		{
+			statement = statement.concat(stackNode.getData() + " | ");
+			stackNode = stackNode.getNextNode();
+		}
+		
+		return statement;
+	}
+	
+	public static void main(String[] args)
+	{
+//		MyStack<Integer> test = new MyStack<>();
+//		
+//		int test1 = 1;
+//		int test2 = 2;
+//		int test3 = 3;
+//		
+//		test.push(test1);
+//		test.push(test2);
+//		test.push(test3);
+//		
+//		System.out.println(test.toString());
+		
+		char operand = '+';
+		char operand2 = '*';
+		
+		
+	}
 }
