@@ -4,69 +4,86 @@ public class InfixExpressionEvaluator
 	public static double evaluateInfix(String infix, int[] values)
 	{
 		MyStack<String> operatorStack = new MyStack<>();
-		MyStack<String> valueStack = new MyStack<>();
-		
+		MyStack<Integer> valueStack = new MyStack<>();
+
+		for(int i = 0; i < values.length; ++i)
+		{
+			valueStack.push(values[i]);
+		}
+
 		String[] expression = infix.split("\\s+");
-		char[] charExpression = new char[expression.length];
-		
-		int i = 0;
-		
-		for(i = 0; i < expression.length; ++i)
+
+		for(int i = 0; i < expression.length; ++i)
 		{
-			charExpression[i] = expression[i].charAt(0);
-			//System.out.println(charExpression[i]);
+			String nextCharacter = expression[i];
+
+			//			if(Character.isLetter(nextCharacter))
+			//			{
+			//				
+			//			}
+			if(nextCharacter.equals("^"))
+			{
+				operatorStack.push(nextCharacter);
+			}
+			if(nextCharacter.equals("+") || nextCharacter.equals("-") || nextCharacter.equals("*") || nextCharacter.equals("/"))
+			{
+				while(operatorStack.isEmpty() == false && hasPrecedence(expression[i], operatorStack.peek()))
+				{
+					String operator = operatorStack.pop();
+
+					int firstNum = valueStack.pop();
+					int secondNum = valueStack.pop();
+
+					int newValue = doOperation(operator, firstNum, secondNum);
+
+					valueStack.push(newValue);
+
+					operatorStack.push(nextCharacter);
+				}
+			}
+			if(nextCharacter.equals("("))
+			{
+				operatorStack.push(nextCharacter);
+			}
+			if(nextCharacter.equals(")"))
+			{
+				while(operatorStack.peek().equals("(") == false)
+				{
+					String operator = operatorStack.pop();
+
+					int firstNum = valueStack.pop();
+					int secondNum = valueStack.pop();
+
+					int newValue = doOperation(operator, firstNum, secondNum);
+
+					valueStack.push(newValue);
+
+					operatorStack.pop();
+				}
+			}
 		}
+		int finalResult = valueStack.pop();
 		
-		i = 0;
-		
-		while(i != charExpression.length)
-		{
-			char nextCharacter = charExpression[i];
-			
-			if(Character.isLetter(nextCharacter))
-			{
-				
-			}
-			if(nextCharacter == '^')
-			{
-				System.out.println("Found " + nextCharacter);
-			}
-			if(nextCharacter == '+' || nextCharacter == '-' || nextCharacter == '*' || nextCharacter == '/' && (hasPrecedence()))
-			{
-				
-			}
-			if(nextCharacter == '(')
-			{
-				
-			}
-			if(nextCharacter == ')')
-			{
-				
-			}
-			
-			++i;
-		}
-		
-		return 0;
+		return finalResult;
 	}
-	
-	public double doOperation(char sign, int a, int b)
+
+	public static int doOperation(String sign, int a, int b)
 	{
-		double result = 0;
-		
-		if(sign == '+')
+		int result = 0;
+
+		if(sign.equals("+"))
 		{
 			result = a + b;
 		}
-		if(sign == '-')
+		if(sign.equals("-"))
 		{
 			result = a - b;
 		}
-		if(sign == '*')
+		if(sign.equals("*"))
 		{
 			result = a * b;
 		}
-		if(sign == '/')
+		if(sign.equals("/"))
 		{
 			if(b != 0)
 			{
@@ -75,38 +92,29 @@ public class InfixExpressionEvaluator
 		}
 		return result;
 	}
-	
-	
-	public boolean hasPrecedence(char firstSign, char secondSign)
+
+
+	public static boolean hasPrecedence(String firstSign, String secondSign)
 	{
-		if(secondSign == '(' || secondSign == ')')
+		if(secondSign.equals("(") || secondSign.equals(")"))
 		{
 			return false;
 		}
-		
-		if((firstSign == '*' || firstSign == '/') && (secondSign == '+' || secondSign == '-'))
+
+		if((firstSign.equals("*") || firstSign.equals("/")) && (secondSign.equals("+") || secondSign.equals("-")))
 		{
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	public static void main(String[] args)
 	{	
 		int[] values = {2,4,6};
-		String infix = "a * b + c";
-		
-		evaluateInfix(infix, values);
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+		String infix = "10 + 2 * 6";
+
+		System.out.println(evaluateInfix(infix, values));
+
 	}
 }
